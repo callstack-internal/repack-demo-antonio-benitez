@@ -1,9 +1,10 @@
-import { createRequire } from 'node:module';
+import {createRequire} from 'node:module';
 import path from 'node:path';
 import * as Repack from '@callstack/repack';
+import {ReanimatedPlugin} from '@callstack/repack-plugin-reanimated';
 
 const dirname = Repack.getDirname(import.meta.url);
-const { resolve } = createRequire(import.meta.url);
+const {resolve} = createRequire(import.meta.url);
 
 /**
  * More documentation, installation, usage, motivation and differences with Metro is available at:
@@ -20,7 +21,7 @@ const { resolve } = createRequire(import.meta.url);
  * @param env Environment options passed from either Webpack CLI or React Native Community CLI
  *            when running with `react-native start/bundle`.
  */
-export default (env) => {
+export default env => {
   const {
     mode = 'development',
     context = dirname,
@@ -78,7 +79,7 @@ export default (env) => {
       path: path.join(dirname, 'build/generated', platform),
       filename: 'index.bundle',
       chunkFilename: '[name].chunk.bundle',
-      publicPath: Repack.getPublicPath({ platform, devServer }),
+      publicPath: Repack.getPublicPath({platform, devServer}),
     },
     /** Configures optimization of the built bundle. */
     optimization: {
@@ -164,6 +165,7 @@ export default (env) => {
           assetsPath,
         },
       }),
+      new ReanimatedPlugin(),
     ],
   };
 };

@@ -3,9 +3,11 @@
  */
 
 import {AppRegistry} from 'react-native';
+import {ScriptManager, Script} from '@callstack/repack/client';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import App from './App';
 import {name as appName} from './app.json';
-import {ScriptManager, Script} from '@callstack/repack/client';
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -20,5 +22,9 @@ ScriptManager.shared.addResolver(async scriptId => {
     };
   }
 });
+
+if (!__DEV__) {
+  ScriptManager.shared.setStorage(AsyncStorage);
+}
 
 AppRegistry.registerComponent(appName, () => App);

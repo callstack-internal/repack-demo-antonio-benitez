@@ -2,6 +2,7 @@ import {createRequire} from 'node:module';
 import path from 'node:path';
 import * as Repack from '@callstack/repack';
 import {ReanimatedPlugin} from '@callstack/repack-plugin-reanimated';
+const appConfig = createRequire(import.meta.url)('./app.json');
 
 const dirname = Repack.getDirname(import.meta.url);
 const {resolve} = createRequire(import.meta.url);
@@ -164,6 +165,19 @@ export default env => {
           sourceMapFilename,
           assetsPath,
         },
+        /*
+        extraChunks: [
+          {
+            include: appConfig.localChunks,
+            type: 'local',
+          },
+          {
+            exclude: appConfig.localChunks,
+            type: 'remote',
+            outputPath: path.join('build/output', platform, 'remote'),
+          },
+        ],
+ */
       }),
       new ReanimatedPlugin(),
     ],

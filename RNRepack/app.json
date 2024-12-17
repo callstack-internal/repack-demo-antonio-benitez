@@ -1,4 +1,5 @@
 {
   "name": "RNRepack",
-  "displayName": "RNRepack"
+  "displayName": "RNRepack",
+  "localChunks": []
 }

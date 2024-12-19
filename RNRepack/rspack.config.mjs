@@ -78,11 +78,11 @@ export default env => {
     output: {
       clean: true,
       hashFunction: 'xxhash64',
-      path: path.join(dirname, 'build', 'RNRepack', platform),
+      path: path.join(dirname, 'build', 'firstDemo', platform),
       filename: 'index.bundle',
       chunkFilename: '[name].chunk.bundle',
       publicPath: Repack.getPublicPath({platform, devServer}),
-      uniqueName: 'RNRepack',
+      uniqueName: 'firstDemo',
     },
     /** Configures optimization of the built bundle. */
     optimization: {
@@ -182,10 +182,10 @@ export default env => {
  */
       }),
       new Repack.plugins.ModuleFederationPluginV2({
-        name: 'RNRepack',
-        filename: 'RNRepack.container.js.bundle',
+        name: 'firstDemo',
+        filename: 'firstDemo.container.js.bundle',
         exposes: {
-          './RNRepackNavigator': './src/navigation/navigators/RootStack',
+          './firstDemoNavigator': './src/navigation/navigators/RootStack',
         },
         dts: false,
         getPublicPath: `return "http://localhost:9001/${platform}/"`,

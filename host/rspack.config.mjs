@@ -174,8 +174,8 @@ export default env => {
         name: 'host',
         dts: false,
         remotes: {
-          RNRepack2: `RNRepack2@http://localhost:9002/${platform}/mf-manifest.json`,
-          RNRepack: `RNRepack@http://localhost:9001/${platform}/mf-manifest.json`,
+          secondDemo: `secondDemo@http://127.0.0.1:9002/${platform}/mf-manifest.json`,
+          firstDemo: `firstDemo@http://127.0.0.1:9001/${platform}/mf-manifest.json`,
         },
         /**
          * Shared modules are shared in the share scope.

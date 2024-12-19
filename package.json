@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "yarn mprocs",
-    "start:host": "cd host2 && yarn start",
+    "start:host": "cd host && yarn start",
     "start:RNRepack": "cd RNRepack && yarn start",
     "start:RNRepack2": "cd RNRepack2 && yarn start"
   },

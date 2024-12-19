@@ -2,8 +2,7 @@ import {createRequire} from 'node:module';
 import path from 'node:path';
 import * as Repack from '@callstack/repack';
 import {ReanimatedPlugin} from '@callstack/repack-plugin-reanimated';
-import {rspack} from '@rspack/core';
-const appConfig = createRequire(import.meta.url)('./app.json');
+import rspack from '@rspack/core';
 
 const dirname = Repack.getDirname(import.meta.url);
 const {resolve} = createRequire(import.meta.url);
@@ -78,11 +77,10 @@ export default env => {
     output: {
       clean: true,
       hashFunction: 'xxhash64',
-      path: path.join(dirname, 'build', 'RNRepack2', platform),
+      path: path.join(dirname, 'build/generated', platform),
       filename: 'index.bundle',
       chunkFilename: '[name].chunk.bundle',
       publicPath: Repack.getPublicPath({platform, devServer}),
-      uniqueName: 'RNRepack2',
     },
     /** Configures optimization of the built bundle. */
     optimization: {
@@ -167,28 +165,23 @@ export default env => {
           sourceMapFilename,
           assetsPath,
         },
-        /*
-        extraChunks: [
-          {
-            include: appConfig.localChunks,
-            type: 'local',
-          },
-          {
-            exclude: appConfig.localChunks,
-            type: 'remote',
-            outputPath: path.join('build/output', platform, 'remote'),
-          },
-        ],
- */
       }),
+      new ReanimatedPlugin(),
       new Repack.plugins.ModuleFederationPluginV2({
-        name: 'RNRepack2',
-        filename: 'RNRepack2.container.js.bundle',
-        exposes: {
-          './RNRepack2Navigator': './src/navigation/navigators/RootStack',
-        },
+        /**
+         * The name of the module is used to identify the module in URLs resolver and imports.
+         */
+        name: 'host',
         dts: false,
-        getPublicPath: `return "http://localhost:9002/${platform}/"`,
+        remotes: {
+          RNRepack2: `RNRepack2@http://localhost:9002/${platform}/mf-manifest.json`,
+          RNRepack: `RNRepack@http://localhost:9001/${platform}/mf-manifest.json`,
+        },
+        /**
+         * Shared modules are shared in the share scope.
+         * React, React Native and React Navigation should be provided here because there should be only one instance of these modules.
+         * Their names are used to match requested modules in this compilation.
+         */
         shared: {
           react: {
             singleton: true,
@@ -245,7 +238,7 @@ export default env => {
           },
         },
       }),
-      new ReanimatedPlugin(),
+      // silence missing @react-native-masked-view optionally required by @react-navigation/elements
       new rspack.IgnorePlugin({
         resourceRegExp: /^@react-native-masked-view/,
       }),

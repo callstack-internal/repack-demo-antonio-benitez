@@ -2,6 +2,7 @@ import {createRequire} from 'node:module';
 import path from 'node:path';
 import * as Repack from '@callstack/repack';
 import {ReanimatedPlugin} from '@callstack/repack-plugin-reanimated';
+import {rspack} from '@rspack/core';
 const appConfig = createRequire(import.meta.url)('./app.json');
 
 const dirname = Repack.getDirname(import.meta.url);
@@ -77,10 +78,11 @@ export default env => {
     output: {
       clean: true,
       hashFunction: 'xxhash64',
-      path: path.join(dirname, 'build/generated', platform),
+      path: path.join(dirname, 'build', 'RNRepack', platform),
       filename: 'index.bundle',
       chunkFilename: '[name].chunk.bundle',
       publicPath: Repack.getPublicPath({platform, devServer}),
+      uniqueName: 'RNRepack',
     },
     /** Configures optimization of the built bundle. */
     optimization: {
@@ -179,7 +181,74 @@ export default env => {
         ],
  */
       }),
+      new Repack.plugins.ModuleFederationPluginV2({
+        name: 'RNRepack',
+        filename: 'RNRepack.container.js.bundle',
+        exposes: {
+          './RNRepackNavigator': './src/navigation/navigators/RootStack',
+        },
+        dts: false,
+        getPublicPath: `return "http://localhost:9001/${platform}/"`,
+        shared: {
+          react: {
+            singleton: true,
+            eager: true,
+          },
+          'react-native': {
+            singleton: true,
+            eager: true,
+          },
+          'react-native-reanimated': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^3.16.5',
+          },
+          '@react-navigation/native': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^7.0.14',
+          },
+          '@react-navigation/native-stack': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^7.2.0',
+          },
+          'react-native-safe-area-context': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^5.0.0',
+          },
+          'react-native-screens': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^4.3.0',
+          },
+          '@react-navigation/elements': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^2.2.5',
+          },
+          '@react-navigation/drawer': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^7.1.1',
+          },
+          '@react-navigation/bottom-tabs': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^7.2.0',
+          },
+          '@react-native-async-storage/async-storage': {
+            singleton: true,
+            eager: true,
+            requiredVersion: '^2.1.0',
+          },
+        },
+      }),
       new ReanimatedPlugin(),
+      new rspack.IgnorePlugin({
+        resourceRegExp: /^@react-native-masked-view/,
+      }),
     ],
   };
 };

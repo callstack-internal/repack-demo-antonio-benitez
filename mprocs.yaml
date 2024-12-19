@@ -1,0 +1,10 @@
+procs:
+  Host:
+    shell: yarn start:host
+    stop: SIGKILL
+  RNRepack:
+    shell: yarn start:RNRepack
+    stop: SIGKILL
+  RNRepack2:
+    shell: yarn start:RNRepack2
+    stop: SIGKILL
